@@ -1,0 +1,161 @@
+const connectionController = require('../controllers/connectionController');
+const { authenticateJWT } = require('../middleware/auth');
+const { attachCurrentTenant } = require('../middleware/tenantScope');
+const { requireActiveTenant } = require('../middleware/requireActiveTenant');
+
+module.exports = (router) => {
+  router.get('/connections', authenticateJWT, attachCurrentTenant, connectionController.listConnections);
+  router.post('/connections', authenticateJWT, attachCurrentTenant, connectionController.createConnection);
+  router.get(
+    '/connections/quickbooks/authorize',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.quickbooksAuthorize
+  );
+  // Browser redirect target from Intuit — authenticated via signed `state`, not JWT header
+  router.get('/connections/quickbooks/callback', connectionController.quickbooksCallback);
+  router.post(
+    '/connections/quickbooks/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.quickbooksSync
+  );
+  router.get(
+    '/connections/zoho/authorize',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.zohoAuthorize
+  );
+  // Browser redirect target from Zoho — authenticated via signed `state`, not JWT header
+  router.get('/connections/zoho/callback', connectionController.zohoCallback);
+  router.post(
+    '/connections/zoho/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.zohoSync
+  );
+  router.post(
+    '/connections/odoo/connect',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.odooConnect
+  );
+  router.post(
+    '/connections/odoo/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.odooSync
+  );
+  router.get(
+    '/connections/odoo/status',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.odooStatus
+  );
+  router.post(
+    '/connections/tally/test',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.tallyTest
+  );
+  router.post(
+    '/connections/tally/connect',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.tallyConnect
+  );
+  router.post(
+    '/connections/tally/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.tallySync
+  );
+  router.get(
+    '/connections/tally/status',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.tallyStatus
+  );
+  router.get(
+    '/connections/sage/authorize',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.sageAuthorize
+  );
+  router.get('/connections/sage/callback', connectionController.sageCallback);
+  router.post(
+    '/connections/sage/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.sageSync
+  );
+  router.get(
+    '/connections/sage/status',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.sageStatus
+  );
+  router.get(
+    '/connections/flowbooks/authorize',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.flowbooksAuthorize
+  );
+  router.get('/connections/flowbooks/callback', connectionController.flowbooksCallback);
+  router.post(
+    '/connections/flowbooks/sync',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.flowbooksSync
+  );
+  router.get(
+    '/connections/flowbooks/status',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.flowbooksStatus
+  );
+  // Spec aliases for Sage integration endpoints
+  router.post(
+    '/sage/sync/invoices',
+    authenticateJWT,
+    attachCurrentTenant,
+    requireActiveTenant,
+    connectionController.sageSync
+  );
+  router.get(
+    '/sage/invoices/status',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.sageStatus
+  );
+  router.post(
+    '/connections/:id/test',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.testConnection
+  );
+  router.get(
+    '/connections/:id/health',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.getConnectionHealth
+  );
+  router.patch(
+    '/connections/:id/sync-settings',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.updateSyncSettings
+  );
+  router.delete(
+    '/connections/:id',
+    authenticateJWT,
+    attachCurrentTenant,
+    connectionController.disconnectConnection
+  );
+};

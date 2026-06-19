@@ -1,0 +1,37 @@
+{
+  "name": "taxora-api",
+  "version": "1.0.0",
+  "description": "Taxora REST API — Nigerian e-invoicing compliance",
+  "main": "src/app.js",
+  "scripts": {
+    "dev": "node src/app.js",
+    "dev:worker": "RUN_WORKER=true node src/app.js",
+    "start": "NODE_ENV=production node src/app.js",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:undo": "sequelize-cli db:migrate:undo",
+    "seed": "sequelize-cli db:seed:all"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "bullmq": "^5.34.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "fast-xml-parser": "^5.8.0",
+    "intuit-oauth": "^4.2.3",
+    "ioredis": "^5.4.2",
+    "jsonwebtoken": "^9.0.2",
+    "mailtrap": "^4.6.0",
+    "mysql2": "^3.22.4",
+    "nodemailer": "^8.0.10",
+    "sequelize": "^6.37.5",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.2"
+  }
+}

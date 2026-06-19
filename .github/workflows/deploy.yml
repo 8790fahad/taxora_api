@@ -1,0 +1,37 @@
+name: 🚀 Deploy taxora api to VPS via SSH
+
+on:
+  push:
+    branches:
+      - server
+
+jobs:
+  deploy:
+    name: 🔐 SSH & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔐 SSH to VPS and Deploy
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: ${{ secrets.VPS_PORT || 22 }}
+          script: |
+            cd /var/www/html/taxora/
+            set -e
+
+            # Load nvm in non-interactive SSH sessions
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+
+            nvm use 22
+            git fetch origin main
+            git reset --hard origin/main
+            npm install
+            npm run migrate
+            pm2 restart taxora || pm2 start src/app.js --name=taxora
+            pm2 save
